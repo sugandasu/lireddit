@@ -8,7 +8,7 @@ export class Post {
   @PrimaryKey()
   id!: number;
 
-  @Field(() => String)
+  @Field()
   @Property()
   title!: string;
 
