@@ -1,12 +1,12 @@
-FROM node:16.3.0
+FROM node
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-# RUN apt-get update && apt-get install bash
+RUN apt-get update
 RUN npm install
 
 COPY . .
 EXPOSE 4000
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "dev2" ]
