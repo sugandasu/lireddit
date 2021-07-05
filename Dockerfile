@@ -9,4 +9,4 @@ RUN npm install
 COPY . .
 EXPOSE 4000
 
-CMD [ "npm", "run", "dev2" ]
+CMD [ "npm", "run", "dev" ]
