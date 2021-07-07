@@ -37,8 +37,9 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
         sameSite: "lax",
-        secure: __prod__,
+        // secure: __prod__,
       },
+      saveUninitialized: false,
       secret: "sfjlsjdfljaldfjhuiqwosnd",
       resave: false,
     })
