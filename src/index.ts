@@ -14,7 +14,7 @@ import { UserResolver } from "./resolvers/user";
 import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
-import { MyContext } from "./types";
+import { MyContext } from "./types/myContext";
 
 const main = async () => {
   const orm = await MikroORM.init(mikroConfig);
