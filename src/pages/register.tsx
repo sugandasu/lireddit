@@ -1,12 +1,8 @@
 import React from "react";
 import { Formik, Form } from "Formik";
-import {
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    Input,
-} from "@chakra-ui/react";
 import { Wrapper } from "../components/Wrapper";
+import { InputField } from "../components/InputField";
+import { Box, Button } from "@chakra-ui/react";
 
 interface registerProps {}
 
@@ -14,23 +10,37 @@ const register: React.FC<registerProps> = ({}) => {
     return (
         <Wrapper variant="regular">
             <Formik
-                initialValues={{ username: "", password: "" }}
+                initialValues={{
+                    username: "",
+                    password: "",
+                }}
                 onSubmit={(values) => {
                     console.log(values);
                 }}
             >
-                {(values, handleChange) => (
+                {({ isSubmitting }) => (
                     <Form>
-                        <FormControl>
-                            <FormLabel htmlFor="username">Name</FormLabel>
-                            <Input
-                                value={values.username}
-                                onChange={handleChange}
-                                id="username"
-                                placeholder="username"
-                            ></Input>
-                            {/* <FormErrorMessage>{form.errors.name}</FormErrorMessage> */}
-                        </FormControl>
+                        <InputField
+                            name="username"
+                            placeholder="Username"
+                            label="Username"
+                        />
+                        <Box mt={4}>
+                            <InputField
+                                name="password"
+                                placeholder="Password"
+                                label="Password"
+                                type="password"
+                            />
+                        </Box>
+                        <Button
+                            mt={4}
+                            type="submit"
+                            isLoading={isSubmitting}
+                            colorScheme="teal"
+                        >
+                            register
+                        </Button>
                     </Form>
                 )}
             </Formik>
