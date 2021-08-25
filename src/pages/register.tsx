@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 
 interface registerProps {}
 
-const register: React.FC<registerProps> = ({}) => {
+const Register: React.FC<registerProps> = ({}) => {
     const router = useRouter();
     const [, register] = useRegisterMutation();
     return (
@@ -58,4 +58,4 @@ const register: React.FC<registerProps> = ({}) => {
     );
 };
 
-export default register;
+export default Register;
