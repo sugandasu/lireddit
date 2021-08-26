@@ -1,9 +1,9 @@
+import { validateRegister } from "./../utils/validateRegister";
 import { MyContext } from "../types/myContext";
 import { User } from "../entities/User";
 import {
   Resolver,
   Mutation,
-  InputType,
   Field,
   Arg,
   Ctx,
@@ -13,14 +13,7 @@ import {
 import { EntityManager } from "@mikro-orm/postgresql";
 import argon2 from "argon2";
 import { COOKIE_NAME } from "../constants";
-
-@InputType()
-class UsernameAndPasswordInput {
-  @Field()
-  username: string;
-  @Field()
-  password: string;
-}
+import { UserInput } from "../utils/UserInput";
 
 @ObjectType()
 class FieldError {
@@ -42,6 +35,12 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Mutation(() => Boolean)
+  async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {
+    // const user = await em.findOne(User, { email });
+    return true;
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() { em, req }: MyContext) {
     if (!req.session.userId) {
@@ -53,39 +52,23 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async register(
-    @Arg("options") options: UsernameAndPasswordInput,
+    @Arg("options") options: UserInput,
     @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
-    if (options.username.trim().length <= 4) {
-      return {
-        errors: [
-          {
-            field: "username",
-            message: "Username must be greater than 4 characters",
-          },
-        ],
-      };
-    }
-
-    if (options.password.trim().length <= 6) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "Password must be greater than 6 characters",
-          },
-        ],
-      };
-    }
-
     const hashedPassword = await argon2.hash(options.password);
     let user;
     try {
+      const errors = validateRegister(options);
+      if (errors) {
+        return { errors };
+      }
+
       const result = await (em as EntityManager)
         .createQueryBuilder(User)
         .getKnexQuery()
         .insert({
           username: options.username,
+          email: options.email,
           password: hashedPassword,
           created_at: new Date(),
           updated_at: new Date(),
@@ -98,7 +81,7 @@ export class UserResolver {
           errors: [
             {
               field: "username",
-              message: "Username is already taken",
+              message: "Username or email is already taken",
             },
           ],
         };
@@ -113,15 +96,29 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("options") options: UsernameAndPasswordInput,
+    @Arg("usernameOrEmail") usernameOrEmail: string,
+    @Arg("password") password: string,
     @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
-    const user = await em.findOne(User, { username: options.username });
+    const user = await em.findOne(
+      User,
+      usernameOrEmail.includes("@")
+        ? { email: usernameOrEmail }
+        : { username: usernameOrEmail }
+    );
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "usernameOrEmail",
+            message: "Username or email does not exists",
+          },
+        ],
+      };
+    }
     if (user) {
-      const validPassword = await argon2.verify(
-        user.password,
-        options.password
-      );
+      const validPassword = await argon2.verify(user.password, password);
       if (validPassword) {
         req.session.userId = user.id;
         return {
@@ -133,8 +130,8 @@ export class UserResolver {
     return {
       errors: [
         {
-          field: "username",
-          message: "Username or password is invalid",
+          field: "password",
+          message: "Password is invalid",
         },
       ],
     };
