@@ -24,7 +24,7 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = Redis({ host: "redis" });
+  const redis = new Redis({ host: "redis" });
 
   app.use(
     cors({
