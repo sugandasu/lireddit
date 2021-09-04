@@ -20,6 +20,7 @@ import { Post } from "./entities/Post";
 
 const main = async () => {
   createConnection({
+    host: "db",
     type: "postgres",
     database: "lireddit2",
     username: "postgres",
