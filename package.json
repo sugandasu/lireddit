@@ -9,17 +9,11 @@
     "start": "node dist/index.js",
     "dev": "nodemon dist/index.js",
     "start2": "ts-node src/index.ts",
-    "dev2": "nodemon --exec ts-node src/index.ts",
-    "migration:create": "mikro-orm migration:create",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev2": "nodemon --exec ts-node src/index.ts"
   },
   "author": "Arif Suganda",
   "license": "ISC",
   "dependencies": {
-    "@mikro-orm/cli": "^4.5.6",
-    "@mikro-orm/core": "^4.5.6",
-    "@mikro-orm/migrations": "^4.5.6",
-    "@mikro-orm/postgresql": "^4.5.6",
     "apollo-server-express": "^2.25.2",
     "argon2": "^0.28.2",
     "class-validator": "^0.13.1",
