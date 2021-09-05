@@ -1,5 +1,5 @@
 import { Box, Button } from "@chakra-ui/react";
-import { Form, Formik } from "formik";
+import { Form, Formik } from "Formik";
 import React from "react";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
@@ -25,6 +25,7 @@ const CreatePost: React.FC<{}> = ({}) => {
                         />
                         <Box mt={4}>
                             <InputField
+                                textarea
                                 name="text"
                                 placeholder="text..."
                                 label="Text"
