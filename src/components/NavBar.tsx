@@ -11,22 +11,21 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     const [{ data, fetching }] = useMeQuery({
         pause: isServer(),
     });
-    let body = null;
+    let body = (
+        <>
+            <NextLink href="/login">
+                <Link color="white" mr={2}>
+                    login
+                </Link>
+            </NextLink>
+            <NextLink href="/register">
+                <Link color="white">register</Link>
+            </NextLink>
+        </>
+    );
 
     if (fetching) {
     } else if (!data?.me) {
-        body = (
-            <>
-                <NextLink href="/login">
-                    <Link color="white" mr={2}>
-                        login
-                    </Link>
-                </NextLink>
-                <NextLink href="/register">
-                    <Link color="white">register</Link>
-                </NextLink>
-            </>
-        );
     } else {
         body = (
             <Flex>
