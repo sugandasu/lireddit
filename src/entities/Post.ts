@@ -5,7 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -33,7 +33,8 @@ export class Post extends BaseEntity {
   @Column()
   creatorId: number;
 
-  @ManyToMany(() => User, (user) => user.posts)
+  @Field()
+  @ManyToOne(() => User, (user) => user.posts)
   creator: User;
 
   @Field(() => String)
