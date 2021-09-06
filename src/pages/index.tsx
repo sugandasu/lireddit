@@ -7,7 +7,9 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from "next/link";
 
 const Index = () => {
-    const [{ data }] = usePostsQuery();
+    const [{ data }] = usePostsQuery({
+        variables: { limit: 10 },
+    });
     return (
         <Layout>
             <NextLink href="/create-post">
@@ -15,11 +17,11 @@ const Index = () => {
             </NextLink>
             <div>hello world</div>
             <br />
-            {!data
-                ? null
-                : data.posts.map((post) => (
-                      <div key={post.id}>{post.title}</div>
-                  ))}
+            {!data ? (
+                <div>loading...</div>
+            ) : (
+                data.posts.map((post) => <div key={post.id}>{post.title}</div>)
+            )}
         </Layout>
     );
 };
