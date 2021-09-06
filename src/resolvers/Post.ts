@@ -56,22 +56,22 @@ export class PostResolver {
 
     const posts = await getConnection().query(
       `
-    select p.*,
+    SELECT p.*,
     json_build_object(
       'id', u.id,
-      'username', u.username
-      'email', u.email
+      'username', u.username,
+      'email', u.email,
+      'createdAt', u."createdAt",
+      'updatedAt', u."updatedAt"
     ) creator
-    from post p
-    inner join public.user u on u.id = p."creatorId"
-    ${cursor ? 'where p."createdAt" < $2' : ""}
-    order by p."createdAt" DESC
-    limit $1
+    FROM post p
+    INNER JOIN public.user u ON u.id = p."creatorId"
+    ${cursor ? 'WHERE p."createdAt" < $2' : ""}
+    ORDER BY p."createdAt" DESC
+    LIMIT $1
     `,
       parameters
     );
-
-    console.log("post: ", posts);
 
     return {
       posts: posts.slice(0, realLimit),
