@@ -9,6 +9,6 @@ export const useIsAuth = () => {
         if (!fetching && !data?.me) {
             router.replace("/login?next=" + router.pathname);
         }
-        console.log(data, fetching);
+        // console.log(data, fetching);
     }, [fetching, data, router]);
 };
