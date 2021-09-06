@@ -17,9 +17,10 @@ import cors from "cors";
 import { createConnection } from "typeorm";
 import { User } from "./entities/User";
 import { Post } from "./entities/Post";
+import path from "path";
 
 const main = async () => {
-  createConnection({
+  const conn = createConnection({
     host: "db",
     type: "postgres",
     database: "lireddit2",
@@ -27,8 +28,11 @@ const main = async () => {
     password: "password",
     logging: true,
     synchronize: true,
+    migrations: [path.join(__dirname, "./migrations/*")],
     entities: [User, Post],
   });
+
+  (await conn).runMigrations();
 
   const app = express();
 
