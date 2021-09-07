@@ -35,9 +35,7 @@ const errorExchange: Exchange =
 const cursorPagination = (): Resolver => {
     return (_parent, fieldArgs, cache, info) => {
         const { parentKey: entityKey, fieldName } = info;
-        // console.log(entityKey, fieldName);
         const allFields = cache.inspectFields(entityKey);
-        // console.log("allFields: ", allFields);
         const fieldInfos = allFields.filter(
             (info) => info.fieldName === fieldName
         );
@@ -52,7 +50,6 @@ const cursorPagination = (): Resolver => {
             cache.resolve(entityKey, fieldKey) as string,
             "posts"
         );
-        // console.log(isItInTheCache);
         info.partial = !isItInTheCache;
 
         const results: string[] = [];
@@ -145,6 +142,19 @@ export const createUrqlClient = (ssrExchange: any) => ({
             },
             updates: {
                 Mutation: {
+                    createPost: (_result, args, cache, info) => {
+                        const allFields = cache.inspectFields("Query");
+                        const fieldInfos = allFields.filter(
+                            (info) => info.fieldName === "posts"
+                        );
+                        fieldInfos.forEach((fi) => {
+                            cache.invalidate(
+                                "Query",
+                                "posts",
+                                fi.arguments || {}
+                            );
+                        });
+                    },
                     logout: (_result, args, cache, info) => {
                         beterUpdateQuery<LogoutMutation, MeQuery>(
                             cache,
