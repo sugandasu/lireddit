@@ -15,7 +15,6 @@ import {
 } from "./../generated/graphql";
 import { beterUpdateQuery } from "./beterUpdateQuery";
 import Router from "next/router";
-import { PaginatedPosts } from "../generated/graphql";
 
 const errorExchange: Exchange =
     ({ forward }) =>
