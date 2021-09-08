@@ -1,6 +1,10 @@
 import React from "react";
-import { NavBar } from "./NavBar";
 import { Wrapper, WrapperVariant } from "./Wrapper";
+import dynamic from "next/dynamic";
+
+const NavBar = dynamic(() => import("./NavBar"), {
+    ssr: false,
+});
 
 interface LayoutProps {
     variant?: WrapperVariant;
