@@ -1,11 +1,19 @@
+import { DeleteIcon } from "@chakra-ui/icons";
 import { Flex, Link } from "@chakra-ui/layout";
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Heading,
+    IconButton,
+    Stack,
+    Text,
+} from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
 import React, { useState } from "react";
 import { Layout } from "../components/Layout";
 import { UpdootSection } from "../components/UpdootSection";
-import { usePostsQuery } from "../generated/graphql";
+import { usePostsQuery, useDeletePostMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
@@ -16,6 +24,7 @@ const Index = () => {
     const [{ data, fetching }] = usePostsQuery({
         variables,
     });
+    const [, deletePost] = useDeletePostMutation();
 
     if (!fetching && !data) {
         return <Box>Query failed</Box>;
@@ -26,25 +35,45 @@ const Index = () => {
                 <div>loading...</div>
             ) : (
                 <Stack spacing={8}>
-                    {data!.posts.posts.map((post) => (
-                        <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
-                            <UpdootSection post={post}></UpdootSection>
-                            <Box>
-                                <NextLink
-                                    href="/post/[id]"
-                                    as={`/post/${post.id}`}
-                                >
-                                    <Link>
-                                        <Heading fontSize="xl">
-                                            {post.title}
-                                        </Heading>
-                                    </Link>
-                                </NextLink>
-                                <Text>posted by {post.creator.username}</Text>
-                                <Text mt={4}>{post.textSnippet}</Text>
-                            </Box>
-                        </Flex>
-                    ))}
+                    {data!.posts.posts.map((post) =>
+                        !post ? null : (
+                            <Flex
+                                key={post.id}
+                                p={5}
+                                shadow="md"
+                                borderWidth="1px"
+                            >
+                                <UpdootSection post={post}></UpdootSection>
+                                <Box flex={1}>
+                                    <NextLink
+                                        href="/post/[id]"
+                                        as={`/post/${post.id}`}
+                                    >
+                                        <Link>
+                                            <Heading fontSize="xl">
+                                                {post.title}
+                                            </Heading>
+                                        </Link>
+                                    </NextLink>
+                                    <Text>
+                                        posted by {post.creator.username}
+                                    </Text>
+                                    <Flex flex={1} align="center">
+                                        <Text mt={4}>{post.textSnippet}</Text>
+                                        <IconButton
+                                            ml="auto"
+                                            colorScheme="red"
+                                            aria-label="delete post"
+                                            icon={<DeleteIcon />}
+                                            onClick={() => {
+                                                deletePost({ id: post.id });
+                                            }}
+                                        />
+                                    </Flex>
+                                </Box>
+                            </Flex>
+                        )
+                    )}
                 </Stack>
             )}
             {data && data.posts.hasMore ? (
