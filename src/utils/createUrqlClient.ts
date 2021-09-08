@@ -18,7 +18,7 @@ import {
 import { beterUpdateQuery } from "./beterUpdateQuery";
 import Router from "next/router";
 import { VoteMutationVariables } from "../generated/graphql";
-import qql from "graphql-tag";
+import gql from "graphql-tag";
 
 const errorExchange: Exchange =
     ({ forward }) =>
@@ -165,13 +165,13 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                             const { postId, value } =
                                 args as VoteMutationVariables;
                             const data = cache.readFragment(
-                                qql`
-                            fragment _ on Post {
-                                id
-                                points
-                                voteStatus
-                            }
-                            `,
+                                gql`
+                                    fragment _ on Post {
+                                        id
+                                        points
+                                        voteStatus
+                                    }
+                                `,
                                 { id: postId } as any
                             );
 
@@ -184,12 +184,13 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                                     (!data.voteStatus ? 1 : 2) * value;
                                 const newPoints = dataPointsNum + voteValue;
                                 cache.writeFragment(
-                                    qql`
-                                fragment __ on Post {
-                                    id
-                                    points 
-                                }
-                                `,
+                                    gql`
+                                        fragment __ on Post {
+                                            id
+                                            points
+                                            voteStatus
+                                        }
+                                    `,
                                     {
                                         id: postId,
                                         points: newPoints,
