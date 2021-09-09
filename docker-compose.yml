@@ -1,0 +1,49 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    networks:
+      - fullstackjs
+    ports:
+      - 5432:5432
+  redis:
+    image: redis
+    restart: always
+    volumes:
+      - ./redisdata:/var/lib/redis
+    networks:
+      - fullstackjs
+    ports:
+      - 6379:6379
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - fullstackjs
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    links:
+      - db
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    networks:
+      - fullstackjs
+    depends_on:
+      - db
+      - redis
+networks:
+  fullstackjs:
+    driver: bridge
